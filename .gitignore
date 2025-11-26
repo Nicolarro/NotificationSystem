@@ -1,0 +1,23 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options
+.vs/
+*.user
+*.suo
+*.userosscache
+
+# NuGet
+*.nupkg
+**/packages/*
+
+# Build outputs
+*.dll
+*.exe
+*.pdb
+
+# Development settings (opcional - depende si quieres compartirlos)
+appsettings.Development.json
+TakeHomeChallenge.API/appsettings.json
+TakeHomeChallenge.API/TakeHomeChallenge.db
