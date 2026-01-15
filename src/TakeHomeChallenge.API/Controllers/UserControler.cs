@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TakeHomeChallenge.Application.DTOs;
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Domain.Entities;
-using TakeHomeChallenge.Infrastructure;
+
 
 namespace TakeHomeChallenge.API.Controllers;
 
@@ -22,8 +22,6 @@ public class UserController : ControllerBase
         _userService = userService;
         _autoMapper = autoMapper;
     }
-
-
 
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,7 +40,6 @@ public class UserController : ControllerBase
     }
 
 
-
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -58,7 +55,6 @@ public class UserController : ControllerBase
         }
         return Ok(user);
     }
-
 
 
     [AllowAnonymous]

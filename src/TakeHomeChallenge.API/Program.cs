@@ -11,7 +11,27 @@ using TakeHomeChallenge.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured in appsettings.json");
+
+var secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey")
+    ?? throw new InvalidOperationException("ApiSettings:SecretKey is not configured in appsettings.json");
+
+
+//Adding CORS to the project
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:5062")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
 
 // Add services to the container.
 
@@ -38,7 +58,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseNpgsql(connectionString);
 });
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -54,6 +74,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.UseCors("AllowReactApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -4,8 +4,6 @@ using TakeHomeChallenge.Application.DTOs;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TakeHomeChallenge.Application.Services;
-using Azure;
-using System.ClientModel;
 
 namespace TakeHomeChallenge.Infrastructure.Repositories;
 
