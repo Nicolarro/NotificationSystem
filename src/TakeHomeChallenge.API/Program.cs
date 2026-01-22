@@ -7,6 +7,7 @@ using TakeHomeChallenge.Infrastructure;
 using TakeHomeChallenge.Infrastructure.Repositories;
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Application.Services;
+using TakeHomeChallenge.Application.Mappings;
 using TakeHomeChallenge.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,8 +31,6 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
-
-
 
 // Add services to the container.
 
@@ -61,7 +60,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(connectionString);
 });
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
 // Dependency Injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();

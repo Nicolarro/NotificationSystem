@@ -16,22 +16,20 @@ public class DBInitializer
             new ()
             {
                 Name="Nicolas",
-                Description= "Usuario Prueba1",
-                NotificationID=1
+                Email = "nicolarro20@gmail.com",
 
             },
             new ()
             {
-                Name="Maria",
-                Description= "Usuario Prueba2",
-                NotificationID=1
+                Name="Toto",
+                Email = "toto@gmail.com",
+    
 
             },
             new ()
             {
                 Name="Carlos",
-                Description= "Usuario Prueba3",
-                NotificationID=1
+                Email= "usuario3@gmail.com",
 
             }
     };

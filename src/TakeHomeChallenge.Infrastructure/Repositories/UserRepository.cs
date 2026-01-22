@@ -35,10 +35,9 @@ public class UserRepository : IUserRepository
 
             throw new Exception(nameof(user));
         }
-        var userDTO = _autoMapper.Map<UserDTO>(user);
-        var newUser = _dbContext.Users.Add(user);
+        var newUser = _dbContext.Users?.Add(user);
         await _dbContext.SaveChangesAsync();
-        return user;
+        return newUser?.Entity;
     }
 
     public async Task<User> UpdateAsync(User user)
@@ -48,17 +47,13 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var user = await _dbContext.Users.FindAsync(id);
-        if (user == null)
-        {
-            throw new Exception("El usuario no existe");
-        }
+        var user = await _dbContext.Users.FindAsync(id) ?? throw new Exception("El usuario no existe");
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
         return true;
     }
 
-    public async Task<User> CreateUser(User user)
+    public async Task<bool> CreateUser(User user)
     {
 
         if (user == null)
@@ -66,10 +61,10 @@ public class UserRepository : IUserRepository
             throw new Exception();
         }
 
-        var userAdded = _dbContext.Users?.Add(user);
+        _dbContext.Users?.Add(user);
 
-
-        return user;
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 
 

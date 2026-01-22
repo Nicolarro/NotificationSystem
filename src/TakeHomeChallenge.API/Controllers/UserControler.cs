@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sprache;
 using TakeHomeChallenge.Application.DTOs;
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Domain.Entities;
@@ -63,15 +64,16 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Description("CreteUser")]
     [HttpPost(Name = "CreteUser")]
-    public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userDTO)
+    public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO userDTO)
     {
 
         var user = _autoMapper.Map<User>(userDTO);
         var newUser = await _userService.CreateUser(user);
-        if (user == null)
+
+        if (newUser == null)
         {
             return NotFound();
         }
-        return Ok(newUser);
+        return Created();
     }
 }

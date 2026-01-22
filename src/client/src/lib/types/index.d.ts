@@ -1,7 +1,7 @@
 type User = {
     id: number;
     name: string;
-    description: string;
+    email: string;
 }
 
 type Notification = {

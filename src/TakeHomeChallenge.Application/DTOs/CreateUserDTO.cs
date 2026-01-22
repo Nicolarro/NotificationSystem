@@ -1,8 +1,9 @@
 namespace TakeHomeChallenge.Application.DTOs;
 
-public class UserDTO
+public class CreateUserDTO
 {
-    public int id { get; set; }
     public string? Name { get; set; }
+    public string? Email { get; set; }
 
 }
+    

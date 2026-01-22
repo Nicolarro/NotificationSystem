@@ -9,6 +9,6 @@ public interface IUserRepository
     Task<User> AddUser(User user);
     Task<User> UpdateAsync(User user);
     Task<bool> DeleteAsync(int id);
-    Task<User> CreateUser(User user);
+    Task<bool> CreateUser(User user);
     Task<bool> ExistsAsync(string userName);
 }

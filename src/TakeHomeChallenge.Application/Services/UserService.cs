@@ -1,6 +1,7 @@
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Domain.Interfaces;
 using TakeHomeChallenge.Domain.Entities;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace TakeHomeChallenge.Application.Services;
 
@@ -30,9 +31,8 @@ public class UserService : IUserService
 
     public async Task<User> CreateUser(User user)
     {
-
-        return await _userRepository.CreateUser(user);
-
+        await _userRepository.CreateUser(user);
+        return user;
     }
 
     public async Task<bool> UpdateUserAsync(User user)
