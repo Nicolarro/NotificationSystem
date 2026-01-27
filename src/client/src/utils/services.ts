@@ -1,7 +1,9 @@
-const getUserData = async () => {
-  const response = await fetch("/api/user");
+import axios from "axios";
+
+export const getUserData = async () => {
+  const response = await axios.get("/api/user");
   console.log(response);
-  return response.json();
+  return response;
 };
 
 export default {

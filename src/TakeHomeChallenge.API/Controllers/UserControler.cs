@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Sprache;
 using TakeHomeChallenge.Application.DTOs;
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Domain.Entities;
@@ -30,7 +29,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Description("GetUsers")]
     [HttpGet]
-    public async Task<ActionResult<ICollection<User>>> GetUsers()
+    public async Task<ActionResult<ICollection<UserResponseDTO>>> GetUsers()
     {
         var users = await _userService.GetUsersAsync();
         if (users == null)
@@ -47,7 +46,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Description("GetUserByID")]
     [HttpGet("{id:int}", Name = "GetUserById")]
-    public async Task<ActionResult<User>> GetUserById(int id)
+    public async Task<ActionResult<UserWithPokemonDTO>> GetUserById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
         if (user == null)
@@ -59,14 +58,13 @@ public class UserController : ControllerBase
 
 
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Description("CreteUser")]
-    [HttpPost(Name = "CreteUser")]
-    public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO userDTO)
+    [Description("CreateUser")]
+    [HttpPost(Name = "CreateUser")]
+    public async Task<ActionResult<UserWithPokemonDTO>> CreateUser([FromBody] CreateUserDTO userDTO)
     {
-
         var user = _autoMapper.Map<User>(userDTO);
         var newUser = await _userService.CreateUser(user);
 
@@ -74,6 +72,6 @@ public class UserController : ControllerBase
         {
             return NotFound();
         }
-        return Created();
+        return CreatedAtRoute("GetUserById", new { id = newUser.Id }, newUser);
     }
 }

@@ -2,6 +2,7 @@ using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Domain.Interfaces;
 using TakeHomeChallenge.Domain.Entities;
 using System.Runtime.InteropServices.Marshalling;
+using TakeHomeChallenge.Application.DTOs;
 
 namespace TakeHomeChallenge.Application.Services;
 
@@ -14,12 +15,12 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<ICollection<User>> GetUsersAsync()
+    public async Task<ICollection<UserWithPokemonDTO>> GetUsersAsync()
     {
         return await _userRepository.GetAllAsync();
     }
 
-    public async Task<User?> GetUserByIdAsync(int id)
+    public async Task<UserWithPokemonDTO?> GetUserByIdAsync(int id)
     {
         return await _userRepository.GetByIdAsync(id);
     }
@@ -29,7 +30,7 @@ public class UserService : IUserService
         return await _userRepository.ExistsAsync(userName);
     }
 
-    public async Task<User> CreateUser(User user)
+    public async Task<UserWithPokemonDTO> CreateUser(User user)
     {
         await _userRepository.CreateUser(user);
         return user;

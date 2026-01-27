@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,7 +17,10 @@ public class User
     [Required]
     public string Email { get; set; } = string.Empty;
 
-    public ICollection<Notification>? Notifications { get; set; }
+     [Required]
+    public string Password {get; set;} = string.Empty;
+
+    public List<int>? PokemonsIds { get; set; }
 
 }
 
