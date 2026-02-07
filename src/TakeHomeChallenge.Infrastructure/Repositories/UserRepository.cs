@@ -1,73 +1,61 @@
-using TakeHomeChallenge.Domain.Interfaces;
-using TakeHomeChallenge.Domain.Entities;
-using TakeHomeChallenge.Application.DTOs;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TakeHomeChallenge.Domain.Entities;
+using TakeHomeChallenge.Domain.Interfaces;
+
 namespace TakeHomeChallenge.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _dbContext;
-    private readonly IMapper _autoMapper;
 
     public UserRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<ICollection<UserWithPokemonDTO>> GetAllAsync()
+    public async Task<ICollection<User>> GetAllAsync()
     {
-        return await _dbContext.Users?.ToListAsync();
+        return await _dbContext.Users
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-    public async Task<User> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        var user = await _dbContext.Users.FindAsync(id);
-        return user;
+        return await _dbContext.Users.FindAsync(id);
     }
 
-    // public async Task<UserWithPokemonDTO> AddUser(User user)
-    // {
-    //     if (user == null)
-    //     {
-
-    //         throw new Exception(nameof(user));
-    //     }
-    //     var newUser = _dbContext.Users?.Add(user);
-    //     await _dbContext.SaveChangesAsync();
-    //     return _autoMapper.Map<UserWithPokemonDTO>(newUser?.Entity);
-    // }
-
-    public async Task<User> UpdateAsync(User user)
+    public async Task<bool> CreateAsync(User user)
     {
-        return user;
+        await _dbContext.Users.AddAsync(user);
+        var saved = await _dbContext.SaveChangesAsync();
+        return saved > 0;
+    }
+
+    public async Task<bool> UpdateAsync(User user)
+    {
+        _dbContext.Users.Update(user);
+        var saved = await _dbContext.SaveChangesAsync();
+        return saved > 0;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var user = await _dbContext.Users.FindAsync(id) ?? throw new Exception("El usuario no existe");
-        _dbContext.Users.Remove(user);
-        await _dbContext.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> CreateUser(User user)
-    {
-
-        if (user == null)
+        var user = await _dbContext.Users.FindAsync(id);
+        if (user is null)
         {
-            throw new Exception();
+            return false;
         }
 
-        _dbContext.Users?.Add(_autoMapper.Map<User>(user));
-
-        await _dbContext.SaveChangesAsync();
-        return true;
+        _dbContext.Users.Remove(user);
+        var saved = await _dbContext.SaveChangesAsync();
+        return saved > 0;
     }
-
 
     public async Task<bool> ExistsAsync(string userName)
     {
-        return false;
+        return await _dbContext.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Name == userName);
     }
 }

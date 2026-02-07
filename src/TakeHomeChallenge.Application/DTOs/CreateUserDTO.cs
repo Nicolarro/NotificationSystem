@@ -1,16 +1,23 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace TakeHomeChallenge.Application.DTOs;
 
 public class CreateUserDTO
 {
-    public string? Name { get; set; }
-    public string? Email { get; set; }
+    [Required]
+    [MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
 
-    public string? PassWord {get;set;}
+    [Required]
+    [EmailAddress]
+    [MaxLength(200)]
+    public string Email { get; set; } = string.Empty;
 
-    public List<int>? PokemonIds {get;set;}
+    [Required]
+    [MinLength(6)]
+    [MaxLength(200)]
+    public string Password { get; set; } = string.Empty;
 
+    public List<int>? PokemonIds { get; set; }
 }
     

@@ -1,77 +1,133 @@
-using System.ComponentModel;
-using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TakeHomeChallenge.Application.DTOs;
 using TakeHomeChallenge.Application.Interfaces;
-using TakeHomeChallenge.Domain.Entities;
-
 
 namespace TakeHomeChallenge.API.Controllers;
 
+/// <summary>
+/// Manages user operations including CRUD and Pokemon assignments.
+/// </summary>
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly AutoMapper.IMapper _autoMapper;
 
-    public UserController(IUserService userService, AutoMapper.IMapper autoMapper)
+    public UserController(IUserService userService)
     {
         _userService = userService;
-        _autoMapper = autoMapper;
     }
 
+    /// <summary>
+    /// Gets all registered users.
+    /// </summary>
+    /// <returns>A list of all users with their Pokemon IDs.</returns>
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Description("GetUsers")]
     [HttpGet]
+    [ProducesResponseType(typeof(ICollection<UserResponseDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<ICollection<UserResponseDTO>>> GetUsers()
     {
         var users = await _userService.GetUsersAsync();
-        if (users == null)
-        {
-            return NotFound();
-        }
         return Ok(users);
     }
 
-
+    /// <summary>
+    /// Gets a specific user by their ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <returns>The user with the specified ID.</returns>
+    /// <response code="200">Returns the user.</response>
+    /// <response code="404">User not found.</response>
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Description("GetUserByID")]
     [HttpGet("{id:int}", Name = "GetUserById")]
-    public async Task<ActionResult<UserWithPokemonDTO>> GetUserById(int id)
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserResponseDTO>> GetUserById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
-        if (user == null)
+        if (user is null)
         {
             return NotFound();
         }
         return Ok(user);
     }
 
-
+    /// <summary>
+    /// Creates a new user.
+    /// </summary>
+    /// <param name="userDto">The user data to create.</param>
+    /// <returns>The newly created user.</returns>
+    /// <response code="201">User created successfully.</response>
+    /// <response code="400">Invalid input data.</response>
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Description("CreateUser")]
-    [HttpPost(Name = "CreateUser")]
-    public async Task<ActionResult<UserWithPokemonDTO>> CreateUser([FromBody] CreateUserDTO userDTO)
+    [HttpPost]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserResponseDTO>> CreateUser([FromBody] CreateUserDTO userDto)
     {
-        var user = _autoMapper.Map<User>(userDTO);
-        var newUser = await _userService.CreateUser(user);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-        if (newUser == null)
+        var createdUser = await _userService.CreateUserAsync(userDto);
+        if (createdUser is null)
+        {
+            return BadRequest("Could not create user.");
+        }
+
+        return CreatedAtRoute("GetUserById", new { id = createdUser.Id }, createdUser);
+    }
+
+    /// <summary>
+    /// Updates an existing user. Only provided fields will be modified.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user to update.</param>
+    /// <param name="userDto">The fields to update.</param>
+    /// <response code="204">User updated successfully.</response>
+    /// <response code="400">Invalid input data.</response>
+    /// <response code="404">User not found.</response>
+    [AllowAnonymous]
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDTO userDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var updated = await _userService.UpdateUserAsync(id, userDto);
+        if (!updated)
         {
             return NotFound();
         }
-        return CreatedAtRoute("GetUserById", new { id = newUser.Id }, newUser);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Deletes a user by their ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user to delete.</param>
+    /// <response code="204">User deleted successfully.</response>
+    /// <response code="404">User not found.</response>
+    [AllowAnonymous]        
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var deleted = await _userService.DeleteUserAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }

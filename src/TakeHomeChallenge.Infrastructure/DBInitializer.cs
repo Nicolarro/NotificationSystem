@@ -1,42 +1,43 @@
-using System.Data.Common;
+using System.Collections.ObjectModel;
 using TakeHomeChallenge.Domain.Entities;
 
 namespace TakeHomeChallenge.Infrastructure;
 
-public class DBInitializer
+public static class DBInitializer
 {
-
     public static async Task SeedData(AppDbContext context)
-
     {
-        if (context.Users?.Any() ?? false) return;
-
-        var users = new List<User>()
+        if (context.Users.Any())
         {
-            new ()
+            return;
+        }
+
+        var users = new List<User>
+        {
+            new()
             {
-                Name="Nicolas",
+                Name = "Nicolas",
                 Email = "nicolarro20@gmail.com",
-
+                Password = "default123",
+                PokemonsIds = new List <int> { 1, 25, 150 }
             },
-            new ()
+            new()
             {
-                Name="Toto",
+                Name = "Toto",
                 Email = "toto@gmail.com",
-    
-
+                Password = "default123",
+                PokemonsIds = new List <int> { 4, 6 }
             },
-            new ()
+            new()
             {
-                Name="Carlos",
-                Email= "usuario3@gmail.com",
-
+                Name = "Carlos",
+                Email = "usuario3@gmail.com",
+                Password = "default123",
+                PokemonsIds = new List<int> { 7, 9, 131 }
             }
-    };
+        };
 
         context.Users.AddRange(users);
-
         await context.SaveChangesAsync();
-
     }
 }
