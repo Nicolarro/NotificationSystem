@@ -19,21 +19,21 @@ public static class DBInitializer
                 Name = "Nicolas",
                 Email = "nicolarro20@gmail.com",
                 Password = "default123",
-                PokemonsIds = new List <int> { 1, 25, 150 }
+                PokemonsIds = new Collection<int> { 1, 25, 150 }
             },
             new()
             {
                 Name = "Toto",
                 Email = "toto@gmail.com",
                 Password = "default123",
-                PokemonsIds = new List <int> { 4, 6 }
+                PokemonsIds = new Collection<int> { 4, 6 }
             },
             new()
             {
                 Name = "Carlos",
                 Email = "usuario3@gmail.com",
                 Password = "default123",
-                PokemonsIds = new List<int> { 7, 9, 131 }
+                PokemonsIds = new Collection<int> { 7, 9, 131 }
             }
         };
 

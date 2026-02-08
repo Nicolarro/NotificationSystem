@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TakeHomeChallenge.Infrastructure;
 using TakeHomeChallenge.Infrastructure.Repositories;
+using TakeHomeChallenge.Infrastructure.ExternalServices;
 using TakeHomeChallenge.Application.Interfaces;
 using TakeHomeChallenge.Application.Services;
 using TakeHomeChallenge.Application.Mappings;
@@ -61,6 +62,10 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+
+// HttpClient for external API calls
+builder.Services.AddHttpClient<IPokemonService, PokemonApiClient>();
+
 // Dependency Injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();

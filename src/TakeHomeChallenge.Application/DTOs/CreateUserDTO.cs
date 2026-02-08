@@ -18,6 +18,6 @@ public class CreateUserDTO
     [MaxLength(200)]
     public string Password { get; set; } = string.Empty;
 
-    public List<int>? PokemonIds { get; set; }
+    public ICollection<int>? PokemonIds { get; set; }
 }
     

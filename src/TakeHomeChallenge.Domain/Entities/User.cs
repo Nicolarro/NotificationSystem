@@ -21,7 +21,7 @@ public class User
     [MaxLength(200)]
     public string Password { get; set; } = string.Empty;
 
-    public List<int>? PokemonsIds { get; set; }
+    public ICollection<int>? PokemonsIds { get; set; }
 }
 
 
