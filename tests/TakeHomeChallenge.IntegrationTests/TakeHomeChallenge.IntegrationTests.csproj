@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- Test framework packages -->
+  <ItemGroup>
+    <!-- xUnit: The test framework - defines [Fact], [Theory], Assert -->
+    <PackageReference Include="xunit" Version="2.9.3" />
+
+    <!-- Test runner: Connects xUnit to Visual Studio / dotnet test -->
+    <!-- Must match xUnit v2 (runner 3.x is for xUnit v3 and is incompatible) -->
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+
+    <!-- Test SDK: Required infrastructure for all .NET test projects -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+
+    <!-- WebApplicationFactory: Spins up your API in-memory for testing -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
+
+    <!-- EF Core for test database setup -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+
+    <!-- FluentAssertions: Readable assertions like .Should().Be() -->
+    <PackageReference Include="FluentAssertions" Version="8.2.0" />
+  </ItemGroup>
+
+  <!-- References to your actual projects (so tests can access them) -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TakeHomeChallenge.API\TakeHomeChallenge.API.csproj" />
+    <ProjectReference Include="..\..\src\TakeHomeChallenge.Application\TakeHomeChallenge.Application.csproj" />
+    <ProjectReference Include="..\..\src\TakeHomeChallenge.Infrastructure\TakeHomeChallenge.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\TakeHomeChallenge.Domain\TakeHomeChallenge.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

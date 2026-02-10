@@ -121,3 +121,8 @@ catch (Exception exception)
 app.MapGet("/hello", () => "Hello Minimal API!");
 
 app.Run();
+
+// This partial class declaration makes Program accessible to WebApplicationFactory<Program>
+// in integration tests. Without this, the test project can't reference the entry point.
+// Top-level statements generate an implicit Program class that is internal by default.
+public partial class Program { }
