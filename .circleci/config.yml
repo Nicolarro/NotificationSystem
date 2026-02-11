@@ -4,8 +4,22 @@ jobs:
   build-backend:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
+      - image: cimg/postgres:16.2
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nilariver
+          POSTGRES_DB: TakeHomeChallengeDB_Test
     steps:
       - checkout
+      - run:
+          name: Wait for PostgreSQL
+          command: |
+            apt-get update && apt-get install -y postgresql-client
+            for i in {1..30}; do
+              pg_isready -h 127.0.0.1 -p 5432 -U postgres && break
+              echo "Waiting for PostgreSQL... ($i/30)"
+              sleep 2
+            done
       - run:
           name: Restore dependencies
           command: dotnet restore
