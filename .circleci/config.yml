@@ -1,0 +1,41 @@
+version: 2.1
+
+jobs:
+  build-backend:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
+    steps:
+      - checkout
+      - run:
+          name: Restore dependencies
+          command: dotnet restore
+      - run:
+          name: Build
+          command: dotnet build --configuration Release --no-restore
+      - run:
+          name: Run tests
+          command: dotnet test --configuration Release --no-build
+
+  build-frontend:
+    docker:
+      - image: cimg/node:18.16
+    working_directory: ~/project/src/client
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Lint
+          command: npm run lint
+
+workflows:
+  build_and_test:
+    jobs:
+      - build-backend
+      - build-frontend
+
