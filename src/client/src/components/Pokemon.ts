@@ -26,7 +26,7 @@ export class Pokemon {
   getPokemonDataById = async (id: number): Promise<PokemonResponse> => {
     try {
       const response = await axios.get(
-        `${import.meta.env.POKEMON_API_PATH}/${id}`,
+        `${this.apiUrl}/pokemon/${id}`,
       );
 
       return {

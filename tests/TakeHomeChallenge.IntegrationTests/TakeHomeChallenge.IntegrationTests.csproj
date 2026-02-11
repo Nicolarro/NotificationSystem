@@ -21,10 +21,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 
     <!-- WebApplicationFactory: Spins up your API in-memory for testing -->
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
 
     <!-- EF Core for test database setup -->
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
 
     <!-- FluentAssertions: Readable assertions like .Should().Be() -->
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
