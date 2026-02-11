@@ -19,19 +19,20 @@ jobs:
   build-frontend:
     docker:
       - image: cimg/node:18.16
-    working_directory: ~/project/src/client
     steps:
-      - checkout:
-          path: ~/project
+      - checkout
       - run:
           name: Install dependencies
           command: npm ci
+          working_directory: src/client
       - run:
           name: Build
           command: npm run build
+          working_directory: src/client
       - run:
           name: Lint
           command: npm run lint
+          working_directory: src/client
 
 workflows:
   build_and_test:
