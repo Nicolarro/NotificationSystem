@@ -47,14 +47,26 @@ jobs:
               --results-directory tests/TakeHomeChallenge.IntegrationTests/coverage \
               -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov
       - run:
+          name: Debug coverage files
+          command: |
+            echo "=== Contents of coverage directory ==="
+            find tests/TakeHomeChallenge.IntegrationTests/coverage -type f | head -20
+            echo "=== Total files found ==="
+            find tests/TakeHomeChallenge.IntegrationTests/coverage -type f | wc -l
+            echo "=== Checking for coverage.info ==="
+            find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.info" -type f
+      - run:
           name: Upload to Coveralls
           command: |
             COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.info" -type f | head -n 1)
             if [ -f "$COVERAGE_FILE" ]; then
               echo "Found coverage file: $COVERAGE_FILE"
+              echo "File size: $(wc -c < "$COVERAGE_FILE") bytes"
               /tmp/venv/bin/coveralls --service=circleci < "$COVERAGE_FILE"
+              echo "Upload completed with exit code: $?"
             else
               echo "Coverage file not found!"
+              echo "Checking environment: COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN:0:10}..."
               exit 1
             fi
       - store_artifacts:
