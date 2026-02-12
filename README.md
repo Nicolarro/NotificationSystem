@@ -1,6 +1,9 @@
 # NotificationSystem
 Notification Management System For Authenticated Users
 
+### Badges
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/Nicolarro/NotificationSystem/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/Nicolarro/NotificationSystem/tree/master)
 
  ### Features
 
