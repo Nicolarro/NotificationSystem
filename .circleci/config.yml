@@ -32,12 +32,6 @@ jobs:
           name: Build
           command: dotnet build --configuration Release --no-restore
       - run:
-          name: Install Python and Coveralls
-          command: |
-            apt-get update -qq && apt-get install -y -qq python3 python3-pip python3-venv
-            python3 -m venv /tmp/venv
-            /tmp/venv/bin/pip install --quiet coveralls
-      - run:
           name: Run tests
           command: |
             dotnet test tests/TakeHomeChallenge.IntegrationTests/TakeHomeChallenge.IntegrationTests.csproj \
@@ -45,28 +39,26 @@ jobs:
               --no-build \
               --collect:"XPlat Code Coverage" \
               --results-directory tests/TakeHomeChallenge.IntegrationTests/coverage \
-              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov
+              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
       - run:
-          name: Debug coverage files
+          name: Upload coverage to Coveralls
           command: |
             echo "=== Contents of coverage directory ==="
-            find tests/TakeHomeChallenge.IntegrationTests/coverage -type f | head -20
-            echo "=== Total files found ==="
-            find tests/TakeHomeChallenge.IntegrationTests/coverage -type f | wc -l
-            echo "=== Checking for coverage.info ==="
-            find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.info" -type f
-      - run:
-          name: Upload to Coveralls
-          command: |
-            COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.info" -type f | head -n 1)
+            find tests/TakeHomeChallenge.IntegrationTests/coverage -type f
+            COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.cobertura.xml" -type f | head -n 1)
             if [ -f "$COVERAGE_FILE" ]; then
               echo "Found coverage file: $COVERAGE_FILE"
               echo "File size: $(wc -c < "$COVERAGE_FILE") bytes"
-              /tmp/venv/bin/coveralls --service=circleci < "$COVERAGE_FILE"
+              # Install coveralls-python for cobertura upload
+              apt-get update -qq && apt-get install -y -qq python3 python3-pip
+              pip install --quiet coveralls
+              # Upload to Coveralls
+              coveralls --service=circleci --file "$COVERAGE_FILE" --format=cobertura
               echo "Upload completed with exit code: $?"
             else
               echo "Coverage file not found!"
-              echo "Checking environment: COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN:0:10}..."
+              echo "Checking for cobertura XML files:"
+              find tests/TakeHomeChallenge.IntegrationTests/coverage -name "*.xml" -type f
               exit 1
             fi
       - store_artifacts:
