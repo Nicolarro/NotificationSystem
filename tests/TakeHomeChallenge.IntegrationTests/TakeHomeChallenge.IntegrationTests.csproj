@@ -28,6 +28,9 @@
 
     <!-- FluentAssertions: Readable assertions like .Should().Be() -->
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
+
+    <!-- Collects coverage data for XPlat Code Coverage -->
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
   </ItemGroup>
 
   <!-- References to your actual projects (so tests can access them) -->

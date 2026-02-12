@@ -31,7 +31,16 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Run tests
-          command: dotnet test --configuration Release --no-build --verbosity normal
+          command: |
+            dotnet test tests/TakeHomeChallenge.IntegrationTests/TakeHomeChallenge.IntegrationTests.csproj \
+              --configuration Release \
+              --no-build \
+              --collect:"XPlat Code Coverage" \
+              --results-directory tests/TakeHomeChallenge.IntegrationTests/coverage \
+              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+      - store_artifacts:
+          path: tests/TakeHomeChallenge.IntegrationTests/coverage
+          destination: coverage
 
   build-frontend:
     docker:
@@ -56,4 +65,3 @@ workflows:
     jobs:
       - build-backend
       - build-frontend
-
