@@ -25,7 +25,9 @@ jobs:
             echo "PostgreSQL is ready!"
       - run:
           name: Restore dependencies
-          command: dotnet restore
+          command: |
+            dotnet tool restore
+            dotnet restore
       - run:
           name: Build
           command: dotnet build --configuration Release --no-restore
@@ -37,7 +39,17 @@ jobs:
               --no-build \
               --collect:"XPlat Code Coverage" \
               --results-directory tests/TakeHomeChallenge.IntegrationTests/coverage \
-              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      - run:
+          name: Upload to Coveralls
+          command: |
+            COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.opencover.xml" -type f | head -n 1)
+            if [ -f "$COVERAGE_FILE" ]; then
+              dotnet tool run csmacnz.Coveralls --opencover -i "$COVERAGE_FILE" --useRelativePaths
+            else
+              echo "Coverage file not found!"
+              exit 1
+            fi
       - store_artifacts:
           path: tests/TakeHomeChallenge.IntegrationTests/coverage
           destination: coverage
