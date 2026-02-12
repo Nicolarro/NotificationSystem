@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TakeHomeChallenge.Domain.Entities;
@@ -21,7 +20,7 @@ public class User
     [MaxLength(200)]
     public string Password { get; set; } = string.Empty;
 
-    public ICollection<int>? PokemonsIds { get; set; }
+    public IList<int>? PokemonsIds { get; set; }
 }
 
 

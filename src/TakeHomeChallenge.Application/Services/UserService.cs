@@ -64,7 +64,7 @@ public class UserService : IUserService
 
         if (userDto.PokemonIds is not null)
         {
-            user.PokemonsIds = new Collection<int>(userDto.PokemonIds.ToList());
+            user.PokemonsIds = userDto.PokemonIds.ToList();
         }
 
         var created = await _userRepository.CreateAsync(user);
@@ -102,7 +102,7 @@ public class UserService : IUserService
 
         if (userDto.PokemonIds is not null)
         {
-            existingUser.PokemonsIds = new Collection<int>(userDto.PokemonIds);
+            existingUser.PokemonsIds = userDto.PokemonIds.ToList();
         }
 
         return await _userRepository.UpdateAsync(existingUser);
