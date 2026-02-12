@@ -32,6 +32,12 @@ jobs:
           name: Build
           command: dotnet build --configuration Release --no-restore
       - run:
+          name: Install Python and Coveralls
+          command: |
+            apt-get update -qq && apt-get install -y -qq python3 python3-pip python3-venv
+            python3 -m venv /tmp/venv
+            /tmp/venv/bin/pip install --quiet coveralls
+      - run:
           name: Run tests
           command: |
             dotnet test tests/TakeHomeChallenge.IntegrationTests/TakeHomeChallenge.IntegrationTests.csproj \
@@ -39,13 +45,14 @@ jobs:
               --no-build \
               --collect:"XPlat Code Coverage" \
               --results-directory tests/TakeHomeChallenge.IntegrationTests/coverage \
-              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov
       - run:
           name: Upload to Coveralls
           command: |
-            COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.opencover.xml" -type f | head -n 1)
+            COVERAGE_FILE=$(find tests/TakeHomeChallenge.IntegrationTests/coverage -name "coverage.info" -type f | head -n 1)
             if [ -f "$COVERAGE_FILE" ]; then
-              dotnet tool run csmacnz.Coveralls --opencover -i "$COVERAGE_FILE" --useRelativePaths
+              echo "Found coverage file: $COVERAGE_FILE"
+              /tmp/venv/bin/coveralls --service=circleci < "$COVERAGE_FILE"
             else
               echo "Coverage file not found!"
               exit 1
