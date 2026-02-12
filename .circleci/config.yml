@@ -49,15 +49,15 @@ jobs:
             if [ -f "$COVERAGE_FILE" ]; then
               echo "Found coverage file: $COVERAGE_FILE"
               echo "File size: $(wc -c < "$COVERAGE_FILE") bytes"
-              # Install coveralls-python for cobertura upload
-              apt-get update -qq && apt-get install -y -qq python3 python3-pip curl
-              pip install --quiet --break-system-packages coveralls-python
-              # Upload to Coveralls - coveralls auto-detects XML format
+              # Install coveralls for coverage upload
+              apt-get update -qq && apt-get install -y -qq python3 python3-pip
+              pip install --quiet --break-system-packages coveralls
+              # Upload to Coveralls
               echo "Uploading to Coveralls..."
               export CIRCLECI=true
               export CIRCLE_BUILD_NUM=$CIRCLE_BUILD_NUM
               export CIRCLE_BRANCH=$CIRCLE_BRANCH
-              python3 -m coveralls --file "$COVERAGE_FILE" --service=circleci || true
+              python3 -m coveralls --file "$COVERAGE_FILE" || true
               echo "Upload step finished"
             else
               echo "Coverage file not found!"
