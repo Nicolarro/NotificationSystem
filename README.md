@@ -5,6 +5,8 @@ Notification Management System For Authenticated Users
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/Nicolarro/NotificationSystem/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/Nicolarro/NotificationSystem/tree/master)
 
+[![Coverage Status](https://coveralls.io/repos/github/Nicolarro/NotificationSystem/badge.svg)](https://coveralls.io/github/Nicolarro/NotificationSystem)
+
  ### Features
 
 - Create new Users with their Pokemon Ids
