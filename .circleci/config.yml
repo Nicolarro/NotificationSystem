@@ -8,18 +8,21 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: nilariver
-          POSTGRES_DB: TakeHomeChallengeDB_Test
+          POSTGRES_DB: postgres
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=127.0.0.1;Port=5432;Database=TakeHomeChallengeDB_Test;User Id=postgres;Password=nilariver;TrustServerCertificate=True;"
+      ApiSettings__SecretKey: "Esta es una clave secreta y tiene que ser extensa para evitar error de encriptación"
     steps:
       - checkout
       - run:
           name: Wait for PostgreSQL
           command: |
-            apt-get update && apt-get install -y postgresql-client
-            for i in {1..30}; do
-              pg_isready -h 127.0.0.1 -p 5432 -U postgres && break
-              echo "Waiting for PostgreSQL... ($i/30)"
+            apt-get update -qq && apt-get install -y -qq postgresql-client > /dev/null
+            until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
+              echo "Waiting for PostgreSQL..."
               sleep 2
             done
+            echo "PostgreSQL is ready!"
       - run:
           name: Restore dependencies
           command: dotnet restore
@@ -28,7 +31,7 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Run tests
-          command: dotnet test --configuration Release --no-build
+          command: dotnet test --configuration Release --no-build --verbosity normal
 
   build-frontend:
     docker:
