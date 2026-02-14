@@ -13,11 +13,34 @@ using TakeHomeChallenge.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured in appsettings.json");
+// Heroku provides DATABASE_URL, convert it to a proper connection string
+var connectionString = GetConnectionString(builder.Configuration);
 
 var secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey")
     ?? throw new InvalidOperationException("ApiSettings:SecretKey is not configured in appsettings.json");
+
+static string GetConnectionString(IConfiguration configuration)
+{
+    // Try Heroku DATABASE_URL first
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    
+    if (!string.IsNullOrEmpty(databaseUrl))
+    {
+        // Parse Heroku DATABASE_URL format: postgres://user:password@host:port/database
+        var uri = new Uri(databaseUrl);
+        var username = uri.UserInfo.Split(':')[0];
+        var password = uri.UserInfo.Split(':')[1];
+        var host = uri.Host;
+        var port = uri.Port;
+        var database = uri.LocalPath.TrimStart('/');
+        
+        return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    
+    // Fallback to appsettings.json
+    return configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured");
+}
 
 
 //Adding CORS to the project
@@ -26,7 +49,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:5062")
+        // Get allowed origins from environment variable or use defaults
+        var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")
+            ?? "http://localhost:5173,http://localhost:3000,http://localhost:5062";
+        
+        policy.WithOrigins(allowedOrigins.Split(','))
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

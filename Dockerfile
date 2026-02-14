@@ -20,6 +20,5 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-EXPOSE 8080
-
-ENTRYPOINT ["dotnet", "TakeHomeChallenge.API.dll"]
+# Heroku dynamically assigns PORT
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet TakeHomeChallenge.API.dll
