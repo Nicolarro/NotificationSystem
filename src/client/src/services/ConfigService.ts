@@ -8,6 +8,7 @@ export class ConfigService {
   private loadConfig(): void {
     // Load configuration from environment variables
     this.config = {
+      API_BASE_URL: import.meta.env.VITE_API_URL || "http://localhost:5062",
       POKEMON_API_URL: import.meta.env.VITE_POKEMON_API_URL || "https://pokeapi.co/api/v2",
     };
   }
