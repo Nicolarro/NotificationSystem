@@ -25,9 +25,7 @@ export class Pokemon {
 
   getPokemonDataById = async (id: number): Promise<PokemonResponse> => {
     try {
-      const response = await axios.get(
-        `${this.apiUrl}/pokemon/${id}`,
-      );
+      const response = await axios.get(`${this.apiUrl}/pokemon/${id}`);
 
       return {
         id: response.data.id,
