@@ -11,10 +11,6 @@ namespace TakeHomeChallenge.IntegrationTests.Fixtures;
 /// WHY MOCK AT THE HTTP LEVEL INSTEAD OF THE SERVICE LEVEL?
 /// =========================================================
 /// Mocking IPokemonService (the previous approach) replaces the ENTIRE client.
-/// Your PokemonApiClient code is never exercised — you're testing nothing about:
-///   - Whether it builds the correct URL
-///   - Whether it correctly parses PokeAPI's JSON structure
-///   - Whether it handles HTTP errors (404, 500) gracefully
 /// 
 /// By mocking at the HttpMessageHandler level:
 ///   - PokemonApiClient is REAL and fully tested

@@ -26,7 +26,6 @@ static string GetConnectionString(IConfiguration configuration)
     
     if (!string.IsNullOrEmpty(databaseUrl))
     {
-        // Parse Heroku DATABASE_URL format: postgres://user:password@host:port/database
         var uri = new Uri(databaseUrl);
         var username = uri.UserInfo.Split(':')[0];
         var password = uri.UserInfo.Split(':')[1];
@@ -36,8 +35,6 @@ static string GetConnectionString(IConfiguration configuration)
         
         return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
     }
-    
-    // Fallback to appsettings.json
     return configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured");
 }
@@ -60,8 +57,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add services to the container.
-
 builder.Services.AddAuthentication(options =>
 {
 
@@ -80,7 +75,6 @@ builder.Services.AddAuthentication(options =>
     };
 }
 );
-
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -135,7 +129,6 @@ try
     var context = services.GetRequiredService<AppDbContext>();
     await context.Database.MigrateAsync();
     await DBInitializer.SeedData(context);
-
 
 }
 catch (Exception exception)

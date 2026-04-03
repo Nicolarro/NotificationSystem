@@ -15,7 +15,6 @@ Notification Management System For Authenticated Users
 - Update User
 - Delete User
 
-
 ## Pre-Requisites
 
 - Docker installed without SUDO Permission
@@ -24,22 +23,68 @@ Notification Management System For Authenticated Users
 
  ### How to run the APP
 
--
--
+1. Create or review the `.env` file in the project root. This repository already includes one with the database values used by Docker Compose.
+2. Start the backend and database with Docker Compose:
 
+```bash
+docker compose -f docker-compose.yaml up -d --build
+```
 
+3. Wait until both containers are running:
+
+```bash
+docker compose -f docker-compose.yaml ps
+```
+
+4. Open the API in your browser:
+
+- Swagger UI: `http://localhost:5062/swagger`
+- Health/sample endpoint: `http://localhost:5062/hello`
+- Users endpoint: `http://localhost:5062/api/User`
+
+5. Start the React client locally in a second terminal:
+
+```bash
+cd src/client
+npm install
+npm run dev
+```
+
+6. Open the frontend at `http://localhost:5173`.
+
+Notes:
+
+- The frontend calls the API on `http://localhost:5062` by default.
+- The API applies Entity Framework migrations and seeds the database automatically on startup.
+- Required ports for the default setup are `5173`, `5062`, and `5432`.
 
  ### How to run the tests 
- -
- -
+1. Make sure PostgreSQL is available on `localhost:5432`.
 
+If you want to use Docker for the database only:
+
+```bash
+docker compose -f docker-compose.yaml up -d postgres
+```
+
+2. Run the integration test project from the repository root:
+
+```bash
+dotnet test tests/TakeHomeChallenge.IntegrationTests/TakeHomeChallenge.IntegrationTests.csproj
+```
+
+Notes:
+
+- The tests use a separate database named `TakeHomeChallengeDB_Test`.
+- The test suite recreates that database automatically and mocks the external Pokemon API.
+- `dotnet run` is not required before running tests.
 
 ## Techs
 
-- .NET: 10.0
-- REact: 19.2.0
-- Entity Framwework :
-- Postgres
+- .NET: 8.0
+- React: 19.2.0
+- Entity Framwework : 
+- Postgres> 
 - Testing: xUnit.net 2.9.3
 
 ## Decisions made
@@ -53,7 +98,7 @@ Notification Management System For Authenticated Users
 
 ## Route
 
-- Local: [API Swagger](http://localhost:5062/api)
+- Local: [API Swagger](http://localhost:5062/swagger)
 
 ## Env vars should be defined
 

@@ -20,7 +20,7 @@ namespace TakeHomeChallenge.IntegrationTests.Fixtures;
 /// 
 /// It reads your Program.cs (that's why we needed `public partial class Program { }`)
 /// and recreates the full DI container, middleware pipeline, and controllers.
-/// 
+
 /// WHAT DO WE OVERRIDE?
 /// =====================
 /// 1. DATABASE → We swap the connection string to point to a SEPARATE test database.
@@ -39,7 +39,7 @@ namespace TakeHomeChallenge.IntegrationTests.Fixtures;
 /// By mocking at the HTTP level, everything is real except the network call:
 ///   Controller → UserService → PokemonApiClient → HttpClient → [MockHandler]
 /// This catches bugs in URL construction, JSON parsing, and error handling.
-/// </summary>
+// / </summary>
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     // Separate test database — never touches your dev DB
